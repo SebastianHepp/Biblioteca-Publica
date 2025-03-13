@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
-import { db } from '../firebaseConfig';
-import { collection, addDoc } from 'firebase/firestore';
+import axios from 'axios';
 
 function AdminPage() {
   const [bookDetails, setBookDetails] = useState({
@@ -24,10 +23,12 @@ function AdminPage() {
     }
 
     try {
-      const docRef = await addDoc(collection(db, "books"), bookDetails);
-      console.log("Libro agregado con ID: ", docRef.id);
+      const response = await axios.post('http://localhost:3001/addBook', bookDetails);
+      console.log("Libro agregado con ID: ", response.data.id);
+      alert('Libro agregado exitosamente.');
     } catch (e) {
       console.error("Error añadiendo libro: ", e);
+      alert('Error añadiendo libro.');
     }
 
     setBookDetails({
@@ -38,7 +39,6 @@ function AdminPage() {
       subgenero: '',
       ano: ''
     });
-    alert('Libro agregado exitosamente.');
   };
 
   return (

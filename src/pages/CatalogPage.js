@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { db } from '../firebaseConfig';
-import { collection, getDocs } from 'firebase/firestore';
+import axios from 'axios';
 import '@fortawesome/fontawesome-free/css/all.min.css';
 
 function CatalogPage() {
@@ -12,9 +11,12 @@ function CatalogPage() {
 
   useEffect(() => {
     const fetchBooks = async () => {
-      const querySnapshot = await getDocs(collection(db, "books"));
-      const booksList = querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-      setBooks(booksList);
+      try {
+        const response = await axios.get('http://localhost:3001/books');
+        setBooks(response.data);
+      } catch (e) {
+        console.error("Error obteniendo libros: ", e);
+      }
     };
 
     fetchBooks();
